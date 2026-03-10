@@ -99,6 +99,7 @@ from .qwen3_vl import (
 from .utils import (
     AutoWeightsLoader,
     PPMissingLayer,
+    WeightsMapper,
     _merge_multimodal_embeddings,
     extract_layer_index,
     is_pp_missing_parameter,
@@ -597,6 +598,7 @@ class Qwen3_5ForCausalLMBase(
         cls,
     ) -> tuple[MambaStateCopyFunc, MambaStateCopyFunc]:
         return MambaStateCopyFuncCalculator.gated_delta_net_state_copy_func()
+
     packed_modules_mapping = {
         "qkv_proj": [
             "q_proj",
