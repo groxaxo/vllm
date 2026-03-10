@@ -117,6 +117,13 @@ from .utils import (
 
 logger = init_logger(__name__)
 
+if QWEN3_5_VL_IMPORT_ERROR is not None:
+    logger.warning_once(
+        "Qwen3.5 multimodal support is unavailable because torchvision "
+        f"could not be imported ({QWEN3_5_VL_IMPORT_ERROR}). "
+        "Qwen3.5 text-only models remain available."
+    )
+
 
 if QWEN3_5_VL_IMPORT_ERROR is None:
 
@@ -632,6 +639,8 @@ class Qwen3_5ForCausalLMBase(
         loader = AutoWeightsLoader(
             self,
             skip_prefixes=["mtp."],
+            # Quantized text-only checkpoints can be derived from the VL parent
+            # and still carry vision weights under model.visual.*.
             ignore_unexpected_prefixes=["model.visual."],
         )
         return loader.load_weights(weights, mapper=self.hf_to_vllm_mapper)
@@ -639,9 +648,8 @@ class Qwen3_5ForCausalLMBase(
     def get_mrope_input_positions(
         self,
         input_tokens: list[int],
-        mm_features: list[object],
+        _mm_features: list[object],
     ) -> tuple[torch.Tensor, int]:
-        del mm_features
         positions = torch.arange(len(input_tokens), dtype=torch.long)
         return positions.unsqueeze(0).expand(3, -1), 0
 

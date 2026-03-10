@@ -7,9 +7,7 @@ from vllm.model_executor.models.qwen3_5 import Qwen3_5ForCausalLM
 
 
 def test_qwen35_text_mrope_positions_are_1d():
-    model = object.__new__(Qwen3_5ForCausalLM)
-
-    positions, delta = model.get_mrope_input_positions([11, 12, 13], [])
+    positions, delta = Qwen3_5ForCausalLM.get_mrope_input_positions(None, [11, 12, 13], [])
 
     assert delta == 0
     assert positions.shape == (3, 3)
