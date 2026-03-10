@@ -6,7 +6,11 @@ from pathlib import Path
 import pytest
 from transformers import PretrainedConfig
 
-from vllm.transformers_utils.config import get_config_parser, register_config_parser
+from vllm.transformers_utils.config import (
+    _CONFIG_REGISTRY,
+    get_config_parser,
+    register_config_parser,
+)
 from vllm.transformers_utils.config_parser_base import ConfigParserBase
 
 
@@ -33,3 +37,8 @@ def test_invalid_config_parser():
         @register_config_parser("invalid_config_parser")
         class InvalidConfigParser:
             pass
+
+
+def test_qwen35_text_config_types_are_registered():
+    assert _CONFIG_REGISTRY["qwen3_5_text"].model_type == "qwen3_5_text"
+    assert _CONFIG_REGISTRY["qwen3_5_moe_text"].model_type == "qwen3_5_moe_text"
