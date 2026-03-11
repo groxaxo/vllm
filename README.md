@@ -64,6 +64,13 @@ Install vLLM with `pip` or [from source](https://docs.vllm.ai/en/latest/getting_
 pip install vllm
 ```
 
+Install this fork directly from GitHub if you want the Qwen3.5 text-only
+checkpoint support in this repository:
+
+```bash
+pip install git+https://github.com/groxaxo/vllm.git
+```
+
 Visit our [documentation](https://docs.vllm.ai/en/latest/) to learn more.
 
 - [Installation](https://docs.vllm.ai/en/latest/getting_started/installation.html)
