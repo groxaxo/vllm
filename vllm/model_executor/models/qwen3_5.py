@@ -26,6 +26,7 @@
 
 import typing
 from collections.abc import Callable, Iterable
+from typing import TYPE_CHECKING
 
 import torch
 from einops import rearrange
@@ -62,6 +63,9 @@ from vllm.model_executor.model_loader.weight_utils import (
 )
 from vllm.multimodal import MULTIMODAL_REGISTRY
 from vllm.sequence import IntermediateTensors
+
+if TYPE_CHECKING:
+    from vllm.multimodal.inputs import MultiModalFeatureSpec
 from vllm.transformers_utils.configs.qwen3_5 import (
     Qwen3_5Config,
     Qwen3_5TextConfig,
@@ -612,7 +616,7 @@ class Qwen3_5ForCausalLMBase(
     def get_mrope_input_positions(
         self,
         input_tokens: list[int],
-        mm_features: list,
+        mm_features: list["MultiModalFeatureSpec"],
     ) -> tuple[torch.Tensor, int]:
         # Text-only model: all three M-RoPE axes use identical 1-D positions.
         # The config inherits mrope_section from the VL parent, but for
@@ -938,7 +942,7 @@ class Qwen3_5ForConditionalGeneration(Qwen3VLForConditionalGeneration, IsHybrid)
     @classmethod
     def get_mamba_state_shape_from_config(
         cls, vllm_config: "VllmConfig"
-    ) -> tuple[tuple[int, int], tuple[int, int]]:
+    ) -> tuple[tuple[int, int], tuple[int, int, int]]:
         parallel_config = vllm_config.parallel_config
         hf_config = vllm_config.model_config.hf_text_config
         tp_size = parallel_config.tensor_parallel_size
